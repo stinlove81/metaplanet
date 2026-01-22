@@ -55,7 +55,7 @@ def run_mtpl_final_engine():
         driver.get(url)
         
         print("⏳ 데이터 로딩을 위해 30초간 대기합니다...")
-        time.sleep(30) 
+        time.sleep(60) 
 
         elements = driver.find_elements(By.CSS_SELECTOR, "h1, h2, h3, h4, p, span, div")
         all_content = [el.text.strip() for el in elements if el.text.strip()]
