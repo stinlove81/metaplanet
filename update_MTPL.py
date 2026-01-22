@@ -23,9 +23,10 @@ try:
         # 로컬 테스트용 (파일명을 실제 키 파일명과 맞춰주세요)
         cred = credentials.Certificate("serviceAccountKey.json")
 
-    firebase_admin.initialize_app(cred, {
-        'databaseURL': 'https://metaplanet-mnav-default-rtdb.firebaseio.com/'
-    })
+if not firebase_admin._apps:
+        firebase_admin.initialize_app(cred, {
+            'databaseURL': 'https://metaplanet-mnav-default-rtdb.firebaseio.com/'
+        })
 except Exception as e:
     print(f"❌ Firebase 초기화 실패: {e}")
     exit()
@@ -44,6 +45,8 @@ def run_mtpl_final_engine():
     
     chrome_options = Options()
     chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
 
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
@@ -52,7 +55,7 @@ def run_mtpl_final_engine():
         print(f"🌐 메타플래닛 접속 시작: {url}")
         start_time = time.time()
         driver.get(url)
-        time.sleep(15) # 데이터 안정성을 위해 15초 대기
+        time.sleep(30) # 데이터 안정성을 위해 15초 대기
 
         elements = driver.find_elements(By.CSS_SELECTOR, "h1, h2, h3, h4, p, span, div")
         all_content = [el.text.strip() for el in elements if el.text.strip()]
@@ -73,6 +76,15 @@ def run_mtpl_final_engine():
             "btcQuantity":     clean_num(get_by_key("42")),
             "debt":            clean_num(get_by_key("75")) / 10,
         }
+
+# [추가] 로그 출력: 어떤 데이터가 들어왔는지 확인용
+        print("\n--- [추출 데이터 디버깅] ---")
+        for k, v in extracted.items():
+            print(f"{k}: {v}")
+        
+        zero_count = list(extracted.values()).count(0)
+        print(f"Zero Count: {zero_count}")
+        print("---------------------------\n")
 
         # --- [안전장치: 0값이 2개 이상이면 중단] ---
         zero_count = list(extracted.values()).count(0)
