@@ -64,33 +64,24 @@ def run_mtpl_final_engine():
                 return all_content[int(idx_num) - 1]
             except: return "데이터없음"
 
-        # --- [정밀 진단 로그] ---
-        print("\n🔎 [이사님의 긴급 진단] 70번~110번 데이터 전수조사")
-        print("-" * 50)
-        for i in range(70, 111):
-            val = get_by_key(str(i))
-            mark = " ⭐ 찾았다!" if any(char.isdigit() for char in val) else ""
-            print(f"인덱스 [{i}]: {val}{mark}")
-        print("-" * 50)
-
         # --- [추출 및 단위 조정] ---
         extracted = {
             "mstrPrice":       clean_num(get_by_key("27")),
             "marketCap":       clean_num(get_by_key("340")) / 10,
-            "enterpriseValue": clean_num(get_by_key("90")) / 10,
+            "enterpriseValue": clean_num(get_by_key("91")) / 10,
             "btcReserve":      clean_num(get_by_key("66")) / 10,
             "btcPrice":        clean_num(get_by_key("12")) / 100,
             "btcQuantity":     clean_num(get_by_key("42")),
-            "debt":            clean_num(get_by_key("75")) / 10,
+            "debt":            clean_num(get_by_key("77")) / 10,
         }
 
         print("\n--- [추출 결과 보고] ---")
         for k, v in extracted.items():
             print(f"{k}: {v}")
         
-        # 진단을 위해 안전장치를 4개로 대폭 늘려둠 (중단 방지)
+        # 진단을 위해 안전장치를 1개로 대폭 강화 (중단 방지)
         zero_count = list(extracted.values()).count(0)
-        if zero_count >= 4:
+        if zero_count >= 0.5:
             print(f"🚨 0이 {zero_count}개라 업데이트를 스킵합니다.")
             return
 
