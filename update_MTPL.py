@@ -54,7 +54,7 @@ def run_mtpl_final_engine():
         start_time = time.time()
         driver.get(url)
         
-        print("⏳ 데이터 로딩을 위해 30초간 대기합니다...")
+        print("⏳ 데이터 로딩을 위해 60초간 대기합니다...")
         time.sleep(60) 
 
         elements = driver.find_elements(By.CSS_SELECTOR, "h1, h2, h3, h4, p, span, div")
@@ -76,15 +76,21 @@ def run_mtpl_final_engine():
             "debt":            clean_num(get_by_key("75")) / 10,
         }
 
-        print("\n--- [추출 데이터 디버깅] ---")
-        for k, v in extracted.items():
-            print(f"{k}: {v}")
+# 2. [범인 검거용] 70번~110번 텍스트 전체 노출
+    print("\n🔎 [정밀 진단] 70번부터 110번 사이 실제 데이터:")
+    print("-" * 30)
+    for i in range(70, 111):
+        val = get_by_key(str(i))
+        # 숫자가 포함된 행은 화살표(👈) 표시를 해서 찾기 쉽게 만듭니다.
+        mark = " 👈 [숫자포함]" if any(char.isdigit() for char in val) else ""
+        print(f"[{i}] {val}{mark}")
+    print("-" * 30)
         
         zero_count = list(extracted.values()).count(0)
         print(f"Zero Count: {zero_count}")
         print("---------------------------\n")
 
-        if zero_count >= 2:
+        if zero_count >= 0.5:
             print(f"🚨 업데이트 중단: 0인 데이터가 {zero_count}개 발견되었습니다.")
             return
 
