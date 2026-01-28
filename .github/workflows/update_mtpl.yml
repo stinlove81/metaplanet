@@ -2,9 +2,8 @@ name: Metaplanet Data Update
 
 on:
   schedule:
-    # 월-금(MON-FRI), UTC 03:00(12시 JST)와 07:00(16시 JST)에 실행
-    - cron: '0 3,7 * * 1-5'
-  workflow_dispatch: # 언제든 수동으로 돌릴 수 있는 버튼
+    - cron: '*/5 * * * *' # 5분마다 실행 (60초 단위는 깃허브 액션 제한이 있어 5분 권장)
+  workflow_dispatch:      # 수동으로 실행하고 싶을 때 사용
 
 jobs:
   build:
